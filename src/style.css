@@ -173,7 +173,6 @@ section {
     & .item-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
     }
   }
 }
@@ -266,5 +265,20 @@ section {
         }
       }
     }
+  }
+}
+
+.item-heading {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+
+  & span {
+    display: inline-block;
+    font-size: 0.95rem;
+    padding: 0 0.5rem;
+    font-weight: 700;
+    color: var(--gray-12);
+    background-color: var(--gray-11);
   }
 }
