@@ -57,26 +57,45 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            // 1. Retrieve existing bot comments for the PR
+             const { data: comments } = await github.rest.issues.listComments({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               issue_number: context.issue.number,
+             });
 
-            <details><summary>Show Plan</summary>
+             const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
+            });
+             
+             const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
 
-            \`\`\`\n
-            ${process.env.PLAN}
-            \`\`\`
+             <details><summary>Show Plan</summary>
 
-            </details>
-            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+             \`\`\`\n
+             ${process.env.PLAN}
+             \`\`\`
 
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: output
-            })
+             </details>
+             Pushed by: @${{ github.actor }}`;
+
+             if (botComment) {
+              github.rest.issues.deleteComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+              });
+            }
+
+             github.rest.issues.createComment({
+               issue_number: context.issue.number,
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               body: output
+             })
 
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
