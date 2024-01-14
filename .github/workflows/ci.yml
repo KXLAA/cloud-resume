@@ -65,7 +65,7 @@ jobs:
              });
 
              const botComment = comments.find(comment => {
-              return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
+              return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style 🖌')
             });
              
              const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
