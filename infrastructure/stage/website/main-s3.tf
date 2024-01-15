@@ -1,5 +1,13 @@
 
 terraform {
+  backend "s3" {
+    bucket = "kxlaa-cloud-resume-state"
+    key    = "stage/website/terraform.tfstate"
+    region = "eu-west-2"
+
+    dynamodb_table = "kxlaa-cloud-resume-state-locks"
+    encrypt        = true
+  }
   required_providers {
     aws = {
       source  = "hashicorp/aws"
