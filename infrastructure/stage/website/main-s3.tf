@@ -22,7 +22,7 @@ terraform {
 locals {
   website_bucket_name     = var.website_domain_name
   www_website_bucket_name = "www.${var.website_domain_name}"
-  build_dir               = "../dist"
+  build_dir               = "../../../dist"
   content_types = {
     ".html" = "text/html"
     ".css"  = "text/css"
