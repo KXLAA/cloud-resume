@@ -1,5 +1,13 @@
 
 terraform {
+  backend "s3" {
+    bucket = "kxlaa-cloud-resume-state"
+    key    = "stage/website/terraform.tfstate"
+    region = "eu-west-2"
+
+    dynamodb_table = "kxlaa-cloud-resume-state-locks"
+    encrypt        = true
+  }
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -15,6 +23,17 @@ locals {
   website_bucket_name     = var.website_domain_name
   www_website_bucket_name = "www.${var.website_domain_name}"
   build_dir               = "../dist"
+  content_types = {
+    ".html" = "text/html"
+    ".css"  = "text/css"
+    ".js"   = "text/javascript"
+    ".svg"  = "image/svg+xml"
+    ".png"  = "image/png"
+    ".jpg"  = "image/jpeg"
+    ".jpeg" = "image/jpeg"
+    ".gif"  = "image/gif"
+    ".ico"  = "image/x-icon"
+  }
 }
 
 provider "aws" {
@@ -97,11 +116,12 @@ resource "aws_s3_bucket_policy" "main_s3_bucket_bucket_policy" {
 
 resource "aws_s3_object" "main_s3_bucket_files" {
   //copy all files and folders in the dist folder in the root of the project
-  for_each    = fileset(local.build_dir, "**/*")
-  bucket      = aws_s3_bucket.main_s3_bucket.id
-  source      = "${local.build_dir}/${each.value}"
-  key         = each.value
-  source_hash = filemd5("${local.build_dir}/${each.value}")
+  for_each     = fileset(local.build_dir, "**/*")
+  bucket       = aws_s3_bucket.main_s3_bucket.id
+  source       = "${local.build_dir}/${each.value}"
+  key          = each.value
+  source_hash  = filemd5("${local.build_dir}/${each.value}")
+  content_type = lookup(local.content_types, regex("\\.[^.]+$", each.value), null)
 }
 
 
