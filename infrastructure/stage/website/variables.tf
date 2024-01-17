@@ -5,7 +5,7 @@ variable "region" {
 
 variable "website_domain_name" {
   type        = string
-  default     = "kxlaaaws.com"
+  default     = "kolaaws.com"
   description = "The domain name of the static site without the www prefix"
 }
 
