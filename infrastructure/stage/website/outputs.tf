@@ -6,12 +6,12 @@ output "aws_route53_zone" {
 
 
 output "main-s3-endpoint" {
-  value       = aws_s3_bucket.main_s3_bucket.website_endpoint
+  value       = aws_s3_bucket_website_configuration.main_s3_bucket_website.website_domain
   description = "The endpoint of the S3 bucket"
 }
 
 output "redirect_s3_bucket" {
-  value       = aws_s3_bucket.redirect_s3_bucket.website_endpoint
+  value       = aws_s3_bucket_website_configuration.redirect_s3_bucket_website.website_domain
   description = "The endpoint of the S3 bucket"
 }
 
