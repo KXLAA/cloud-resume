@@ -26,3 +26,13 @@ output "redirect-s3-hosted_zone_id" {
 }
 
 
+output "website_url" {
+  description = "The URL of the website (main bucket)"
+  value       = aws_cloudfront_distribution.main_s3_bucket_distribution.domain_name
+}
+
+output "redirect_url" {
+  description = "The URL of the website (redirect bucket)"
+  value       = aws_cloudfront_distribution.redirect_s3_bucket_distribution.domain_name
+}
+
